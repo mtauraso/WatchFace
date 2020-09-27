@@ -4,6 +4,9 @@
 
 #include "esp32/MemStats.h"
 
+#include "clock.h"
+#include "watchglobals.h"
+
 
 // TODO: Load Prefs from flash
 #if 0
@@ -22,7 +25,6 @@ void loadPreferences() {
 Preferences preferences;
 #endif
 
-
 // Goals
 //   Make a watch face for the T-Watch 2020
 //    X Print debug on serial prot
@@ -35,101 +37,36 @@ Preferences preferences;
 //    - Wifi (Hardcode SSID/PW, use for NTP, Display connect status)
 //    - Battery Meter (Display battery %, Display charging/not)
 
-LV_IMG_DECLARE(anime_girl);
-
 TTGOClass * watch = nullptr;
 //TFT_eSPI *tft = nullptr;
 
-PCF8563_Class *rtc = nullptr;
 
 // Start watch hardware systems
 void watchStart() {
   Serial.begin(115200);
-  Serial.println("Hello World");
+  Serial.println("Hello World 2");
 
   watch = TTGOClass::getWatch();
   watch->begin();
   watch->lvgl_begin();
 
+  // TODO, pull this off into initialization code on clock
   rtc = watch->rtc;
   //TODO: HACK This sets the clock to the moment the firmware was compiled
   //TODO: WIFI Fix by implementing wifi ntp sync
   rtc->check();
 }
 
-typedef struct {
-  lv_obj_t *hour;
-  lv_obj_t *minute;
-  lv_obj_t *second;
-} str_datetime_t;
-static str_datetime_t time_labels;
-
-// xcxc
-int counter = 0;
-
-lv_obj_t* clockScr() {
-  lv_obj_t* clock_scr = lv_obj_create(NULL, NULL);
-
-  // Background
-  lv_obj_t* background = lv_img_create(clock_scr, NULL);
-  lv_img_set_src(background, &anime_girl);
-  lv_obj_align(background, NULL, LV_ALIGN_CENTER, 0, 0);
-
-  //Style for numbers
-  static lv_style_t style;
-  lv_style_init(&style);
-  lv_style_set_text_color(&style, LV_STATE_DEFAULT, LV_COLOR_WHITE);
-  lv_style_set_text_font(&style, LV_STATE_DEFAULT, &lv_font_montserrat_32);
-
-  //Numbers
-  time_labels.hour = lv_label_create(background, nullptr);
-  lv_obj_add_style(time_labels.hour, LV_OBJ_PART_MAIN, &style);
-  lv_label_set_text(time_labels.hour, "00");
-  lv_obj_align(time_labels.hour, NULL, LV_ALIGN_CENTER, -50, 0);
-
-  time_labels.minute = lv_label_create(background, nullptr);
-  lv_obj_add_style(time_labels.minute, LV_OBJ_PART_MAIN, &style);
-  lv_label_set_text(time_labels.minute, "00");
-  lv_obj_align(time_labels.minute, NULL, LV_ALIGN_CENTER, 0, 0);
-
-  time_labels.second = lv_label_create(background, nullptr);
-  lv_obj_add_style(time_labels.second, LV_OBJ_PART_MAIN, &style);
-  lv_label_set_text(time_labels.second, "00");
-  lv_obj_align(time_labels.second, NULL, LV_ALIGN_CENTER, 50, 0);
-
-  //lv_obj_t * label1 = lv_label_create(clock_scr, NULL);
-  //lv_label_set_text(label1, LV_SYMBOL_OK);
-
-  return clock_scr;
-}
-
-void update_clock(lv_task_t *t) {
-  //lv_obj_t* clock_scr = clockScr();
-  //lv_scr_load_anim(clock_scr, LV_SCR_LOAD_ANIM_MOVE_TOP, 990, 0, true);
-
-  // xcxc use the RTC directly
-  RTC_Date curr_datetime = rtc->getDateTime();
-
-  lv_label_set_text_fmt(time_labels.hour, "%02u", curr_datetime.hour);
-  lv_label_set_text_fmt(time_labels.minute, "%02u", curr_datetime.minute);
-  lv_label_set_text_fmt(time_labels.second, "%02u", curr_datetime.second);
-
-  //printRamStats();
-}
 
 void setup() {
   // put your setup code here, to run once:
   watchStart();
   printRamStats();
-  //  printNvsStats();
-  //  printFlashStats();
+  //printNvsStats();
+  //printFlashStats();
 
   watch->openBL();
   watch->bl->adjust(100);
-
-  //tft = watch->tft;
-  //tft->setTextFont(2);
-  //tft->println("Hello World");
 
   lv_obj_t* clock_scr = clockScr();
   lv_scr_load(clock_scr);

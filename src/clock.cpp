@@ -3,7 +3,10 @@
 //#include "watchglobals.h"
 
 #include <lvgl/lvgl.h>
-LV_IMG_DECLARE(anime_girl);
+
+extern "C" {
+	LV_IMG_DECLARE(anime_girl);
+}
 
 // Labels that have H:M:S of time
 typedef struct {

@@ -14,11 +14,11 @@
 
 // For RTC
 #ifdef WATCH_SIM
-#pragma message ( "Warning: your warning text here Implement simulated RTC Here" )
+#include "win/rtc.h"
 #else
 #include "esp32/config.h"
-extern PCF8563_Class * rtc;
 #endif
 
+extern PCF8563_Class * rtc;
 
 #endif

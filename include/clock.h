@@ -5,6 +5,6 @@
 #include <lvgl/lvgl.h>
 
 lv_obj_t* clockScr();
-void update_clock(lv_task_t *t);
+void update_clock(lv_task_t* t);
 
 #endif

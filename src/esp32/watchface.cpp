@@ -38,6 +38,7 @@ Preferences preferences;
 //    - Battery Meter (Display battery %, Display charging/not)
 
 TTGOClass * watch = nullptr;
+PCF8563_Class * rtc = nullptr;
 //TFT_eSPI *tft = nullptr;
 
 

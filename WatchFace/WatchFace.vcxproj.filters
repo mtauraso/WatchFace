@@ -16,19 +16,19 @@
     <Filter Include="Source Files\win">
       <UniqueIdentifier>{fb629fc8-f16e-415e-af2a-652e703521f8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\win">
+      <UniqueIdentifier>{f1f88317-7884-4cb6-87d9-7260ce28d681}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\win\main.c">
-      <Filter>Source Files\win</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\anime_girl.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\clock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\watchglobals.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\src\win\main.cpp">
+      <Filter>Source Files\win</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -37,6 +37,9 @@
     </ClInclude>
     <ClInclude Include="..\include\watchglobals.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\win\rtc.h">
+      <Filter>Header Files\win</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

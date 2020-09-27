@@ -1,7 +1,8 @@
-#include "clock.h"
+//#include "clock.h"
 
-#include "watchglobals.h"
+//#include "watchglobals.h"
 
+#include <lvgl/lvgl.h>
 LV_IMG_DECLARE(anime_girl);
 
 // Labels that have H:M:S of time
@@ -27,17 +28,17 @@ lv_obj_t* clockScr() {
   lv_style_set_text_font(&style, LV_STATE_DEFAULT, &lv_font_montserrat_32);
 
   //Numbers
-  time_labels.hour = lv_label_create(background, nullptr);
+  time_labels.hour = lv_label_create(background, NULL);
   lv_obj_add_style(time_labels.hour, LV_OBJ_PART_MAIN, &style);
   lv_label_set_text(time_labels.hour, "00");
   lv_obj_align(time_labels.hour, NULL, LV_ALIGN_CENTER, -50, 0);
 
-  time_labels.minute = lv_label_create(background, nullptr);
+  time_labels.minute = lv_label_create(background, NULL);
   lv_obj_add_style(time_labels.minute, LV_OBJ_PART_MAIN, &style);
   lv_label_set_text(time_labels.minute, "00");
   lv_obj_align(time_labels.minute, NULL, LV_ALIGN_CENTER, 0, 0);
 
-  time_labels.second = lv_label_create(background, nullptr);
+  time_labels.second = lv_label_create(background, NULL);
   lv_obj_add_style(time_labels.second, LV_OBJ_PART_MAIN, &style);
   lv_label_set_text(time_labels.second, "00");
   lv_obj_align(time_labels.second, NULL, LV_ALIGN_CENTER, 50, 0);
@@ -48,14 +49,23 @@ lv_obj_t* clockScr() {
   return clock_scr;
 }
 
+int counter = 0;
+
 void update_clock(lv_task_t *t) {
-  //lv_obj_t* clock_scr = clockScr();
-  //lv_scr_load_anim(clock_scr, LV_SCR_LOAD_ANIM_MOVE_TOP, 990, 0, true);
+	//lv_obj_t* clock_scr = clockScr();
+	//lv_scr_load_anim(clock_scr, LV_SCR_LOAD_ANIM_MOVE_TOP, 990, 0, true);
 
-  // xcxc use the RTC directly
-  RTC_Date curr_datetime = rtc->getDateTime();
+	// xcxc use the RTC directly
+#if 0
+	RTC_Date curr_datetime = rtc->getDateTime();
 
-  lv_label_set_text_fmt(time_labels.hour, "%02u", curr_datetime.hour);
-  lv_label_set_text_fmt(time_labels.minute, "%02u", curr_datetime.minute);
-  lv_label_set_text_fmt(time_labels.second, "%02u", curr_datetime.second);
+	lv_label_set_text_fmt(time_labels.hour, "%02u", curr_datetime.hour);
+	lv_label_set_text_fmt(time_labels.minute, "%02u", curr_datetime.minute);
+	lv_label_set_text_fmt(time_labels.second, "%02u", curr_datetime.second);
+#endif
+
+	counter += 1;
+	lv_label_set_text_fmt(time_labels.hour, "%02u", counter/3600);
+	lv_label_set_text_fmt(time_labels.minute, "%02u", (counter/60)%60);
+	lv_label_set_text_fmt(time_labels.second, "%02u", counter%60);
 }

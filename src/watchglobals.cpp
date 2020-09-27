@@ -5,4 +5,6 @@
 
 #include "watchglobals.h"
 
+#ifndef WATCH_SIM
 PCF8563_Class * rtc = nullptr;
+#endif

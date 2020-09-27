@@ -15,6 +15,8 @@
 #include "lv_drivers/indev/keyboard.h"
 #include "lv_examples/lv_examples.h"
 
+#include "clock.h"
+
 /*********************
 *      DEFINES
 *********************/
@@ -57,7 +59,13 @@ int main(int argc, char** argv)
      * item.
      */
 
-    lv_demo_widgets();
+	lv_obj_t* clock_scr = clockScr();
+	lv_scr_load(clock_scr);
+
+	lv_task_create(update_clock, 50, LV_TASK_PRIO_MID, NULL);
+
+
+    //lv_demo_widgets();
     //lv_demo_benchmark();
     //lv_demo_keypad_encoder();
     //lv_demo_printer();
@@ -114,8 +122,8 @@ static void hal_init(void)
     monitor_init();
 
     static lv_disp_buf_t disp_buf1;
-    static lv_color_t buf1_1[LV_HOR_RES_MAX * 120];
-    lv_disp_buf_init(&disp_buf1, buf1_1, NULL, LV_HOR_RES_MAX * 120);
+    static lv_color_t buf1_1[LV_HOR_RES_MAX * LV_VER_RES_MAX];
+    lv_disp_buf_init(&disp_buf1, buf1_1, NULL, LV_HOR_RES_MAX * LV_VER_RES_MAX);
 
     lv_disp_drv_t disp_drv;
     lv_disp_drv_init(&disp_drv);            /*Basic initialization*/

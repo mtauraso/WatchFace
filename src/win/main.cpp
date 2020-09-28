@@ -15,6 +15,7 @@
 #include "lv_drivers/indev/keyboard.h"
 #include "lv_examples/lv_examples.h"
 
+#include "watchglobals.h"
 #include "clock.h"
 
 /*********************
@@ -36,6 +37,8 @@ static int tick_thread(void *data);
 **********************/
 static lv_indev_t * kb_indev;
 
+PCF8563_Class * rtc;
+
 /**********************
 *      MACROS
 **********************/
@@ -51,6 +54,9 @@ int main(int argc, char** argv)
 
     /*Initialize the HAL for LittlevGL*/
     hal_init();
+
+    rtc = new PCF8563_Class();
+    rtc->check();
 
     /*
      * Demos, benchmarks, and tests.

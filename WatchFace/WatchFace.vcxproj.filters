@@ -30,6 +30,9 @@
     <ClCompile Include="..\src\win\main.cpp">
       <Filter>Source Files\win</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\win\rtc.cpp">
+      <Filter>Source Files\win</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\clock.h">

@@ -155,6 +155,7 @@
     <ClCompile Include="..\src\anime_girl.c" />
     <ClCompile Include="..\src\clock.cpp" />
     <ClCompile Include="..\src\win\main.cpp" />
+    <ClCompile Include="..\src\win\rtc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\clock.h" />

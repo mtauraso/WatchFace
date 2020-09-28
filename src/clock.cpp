@@ -1,6 +1,6 @@
 //#include "clock.h"
 
-//#include "watchglobals.h"
+#include "watchglobals.h"
 
 #include <lvgl/lvgl.h>
 
@@ -55,20 +55,12 @@ lv_obj_t* clockScr() {
 int counter = 0;
 
 void update_clock(lv_task_t *t) {
-	//lv_obj_t* clock_scr = clockScr();
-	//lv_scr_load_anim(clock_scr, LV_SCR_LOAD_ANIM_MOVE_TOP, 990, 0, true);
 
-	// xcxc use the RTC directly
-#if 0
+	// Get time from the RTC directly
+
 	RTC_Date curr_datetime = rtc->getDateTime();
 
 	lv_label_set_text_fmt(time_labels.hour, "%02u", curr_datetime.hour);
 	lv_label_set_text_fmt(time_labels.minute, "%02u", curr_datetime.minute);
 	lv_label_set_text_fmt(time_labels.second, "%02u", curr_datetime.second);
-#endif
-
-	counter += 1;
-	lv_label_set_text_fmt(time_labels.hour, "%02u", counter/3600);
-	lv_label_set_text_fmt(time_labels.minute, "%02u", (counter/60)%60);
-	lv_label_set_text_fmt(time_labels.second, "%02u", counter%60);
 }

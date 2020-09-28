@@ -33,6 +33,15 @@
     <ClCompile Include="..\src\win\rtc.cpp">
       <Filter>Source Files\win</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\background.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\clock_2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\test_pattern.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\clock.h">
@@ -43,6 +52,15 @@
     </ClInclude>
     <ClInclude Include="..\include\win\rtc.h">
       <Filter>Header Files\win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\background.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\clock_2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\test_pattern.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

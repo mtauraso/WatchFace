@@ -4,8 +4,11 @@
 
 #include "esp32/MemStats.h"
 
-#include "clock.h"
+
 #include "watchglobals.h"
+#include "clock.h"
+#include "clock_2.h"
+#include "test_pattern.h"
 
 
 // TODO: Load Prefs from flash
@@ -67,12 +70,11 @@ void setup() {
   //printFlashStats();
 
   watch->openBL();
-  watch->bl->adjust(100);
+  watch->bl->adjust(30);
 
-  lv_obj_t* clock_scr = clockScr();
-  lv_scr_load(clock_scr);
-
-  lv_task_create(update_clock, 50, LV_TASK_PRIO_MID, nullptr);
+  //lv_scr_load(clock_2_create(NULL));
+  lv_scr_load(test_pattern_create(NULL));
+  //lv_task_create(clock_2_update, 50, LV_TASK_PRIO_MID, nullptr);
 }
 
 void loop() {

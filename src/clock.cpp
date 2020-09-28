@@ -1,12 +1,7 @@
-//#include "clock.h"
 
 #include "watchglobals.h"
-
-#include <lvgl/lvgl.h>
-
-extern "C" {
-	LV_IMG_DECLARE(anime_girl);
-}
+#include "clock.h"
+#include "background.h"
 
 // Labels that have H:M:S of time
 typedef struct {
@@ -16,13 +11,11 @@ typedef struct {
 } str_datetime_t;
 static str_datetime_t time_labels;
 
-lv_obj_t* clockScr() {
-  lv_obj_t* clock_scr = lv_obj_create(NULL, NULL);
+lv_obj_t* clock_create(lv_obj_t* parent) {
+  lv_obj_t* clock_scr = lv_obj_create(parent, NULL);
 
-  // Background
-  lv_obj_t* background = lv_img_create(clock_scr, NULL);
-  lv_img_set_src(background, &anime_girl);
-  lv_obj_align(background, NULL, LV_ALIGN_CENTER, 0, 0);
+  // Put the background in
+  lv_obj_t* background = background_create(clock_scr);
 
   //Style for numbers
   static lv_style_t style;
@@ -46,18 +39,11 @@ lv_obj_t* clockScr() {
   lv_label_set_text(time_labels.second, "00");
   lv_obj_align(time_labels.second, NULL, LV_ALIGN_CENTER, 50, 0);
 
-  //lv_obj_t * label1 = lv_label_create(clock_scr, NULL);
-  //lv_label_set_text(label1, LV_SYMBOL_OK);
-
   return clock_scr;
 }
 
-int counter = 0;
-
-void update_clock(lv_task_t *t) {
-
-	// Get time from the RTC directly
-
+void clock_update(lv_task_t *t) {
+	// Get time from the the RTC directly
 	RTC_Date curr_datetime = rtc->getDateTime();
 
 	lv_label_set_text_fmt(time_labels.hour, "%02u", curr_datetime.hour);

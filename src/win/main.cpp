@@ -17,6 +17,8 @@
 
 #include "watchglobals.h"
 #include "clock.h"
+#include "clock_2.h"
+#include "test_pattern.h"
 
 /*********************
 *      DEFINES
@@ -31,6 +33,7 @@
 **********************/
 static void hal_init(void);
 static int tick_thread(void *data);
+static void adjust_gamma(void);
 
 /**********************
 *  STATIC VARIABLES
@@ -54,6 +57,7 @@ int main(int argc, char** argv)
 
     /*Initialize the HAL for LittlevGL*/
     hal_init();
+    adjust_gamma();
 
     rtc = new PCF8563_Class();
     rtc->check();
@@ -65,11 +69,9 @@ int main(int argc, char** argv)
      * item.
      */
 
-	lv_obj_t* clock_scr = clockScr();
-	lv_scr_load(clock_scr);
-
-	lv_task_create(update_clock, 50, LV_TASK_PRIO_MID, NULL);
-
+//	lv_scr_load(clock_2_create(NULL));
+//	lv_task_create(clock_2_update, 50, LV_TASK_PRIO_MID, NULL);
+    lv_scr_load(test_pattern_create(NULL));
 
     //lv_demo_widgets();
     //lv_demo_benchmark();
@@ -161,6 +163,62 @@ static void hal_init(void)
     * Create an SDL thread to do this*/
     SDL_CreateThread(tick_thread, "tick", NULL);
 }
+
+//Haxonhax
+// Mess with the gamma
+// Reach inside lv_driver's internals...
+
+// Forward declare this extern I want from lv_drivers/display/monitor.c
+extern "C" {
+    typedef struct {
+        SDL_Window* window;
+        SDL_Renderer* renderer;
+        SDL_Texture* texture;
+        volatile bool sdl_refr_qry;
+#if MONITOR_DOUBLE_BUFFERED
+        uint32_t* tft_fb_act;
+#else
+        uint32_t tft_fb[LV_HOR_RES_MAX * LV_VER_RES_MAX];
+#endif
+    } monitor_t;
+
+    extern monitor_t monitor;
+}
+
+static void clamp_ramp(uint8_t min, uint8_t max, Uint16* ramp) {
+    //input value of 0->min maps to min
+    for (int i = 0; i < min; i++) {
+        ramp[i] = min*256;
+    };
+
+    //input value of max->255 maps to max
+    for (int i = max; i < 256; i++) {
+        ramp[i] = max*256;
+    }
+}
+
+static void adjust_gamma(void) {
+    float gammaR = 1.0;// 0.7;
+    float gammaG = 1.0;// 1.1;
+    float gammaB = 1.0;// 1.4;
+
+    float scale = 1.0;
+
+    static Uint16 gammaRampR[256];
+    static Uint16 gammaRampG[256];
+    static Uint16 gammaRampB[256];
+
+    SDL_CalculateGammaRamp(gammaR*scale, gammaRampR);
+    SDL_CalculateGammaRamp(gammaG*scale, gammaRampG);
+    SDL_CalculateGammaRamp(gammaB*scale, gammaRampB);
+
+    //clamp_ramp(0, 100, gammaRampR);
+    //clamp_ramp(20, 255, gammaRampB);
+
+    SDL_SetWindowGammaRamp(monitor.window, gammaRampR, gammaRampG, gammaRampB);
+}
+
+
 
 /**
 * A task to measure the elapsed time for LittlevGL

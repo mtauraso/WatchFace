@@ -18,7 +18,14 @@
 #else
 #include "esp32/config.h"
 #endif
-
 extern PCF8563_Class * rtc;
+
+
+// For ps_malloc on the watch sim
+#ifdef WATCH_SIM
+#include <cstdlib>
+#define ps_malloc malloc
+#endif
+
 
 #endif

@@ -153,12 +153,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\anime_girl.c" />
+    <ClCompile Include="..\src\background.cpp" />
     <ClCompile Include="..\src\clock.cpp" />
+    <ClCompile Include="..\src\clock_2.cpp" />
+    <ClCompile Include="..\src\test_pattern.cpp" />
     <ClCompile Include="..\src\win\main.cpp" />
     <ClCompile Include="..\src\win\rtc.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\background.h" />
     <ClInclude Include="..\include\clock.h" />
+    <ClInclude Include="..\include\clock_2.h" />
+    <ClInclude Include="..\include\test_pattern.h" />
     <ClInclude Include="..\include\watchglobals.h" />
     <ClInclude Include="..\include\win\rtc.h" />
   </ItemGroup>

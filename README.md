@@ -9,23 +9,27 @@ git pull
 git submodule update --init --recursive
 ```
 
-## Directory Structure
+## Directory Structure and Files
+`platformio.ini` Main config for platformio, which we use to pull in all watch deps (Arduino for esp32, TTGO Watch library, etc). Recommend opening the main repo folder with VS Code Platform IO extension
+
+`watch_sim.sln` VS 2019 solution which builds the same watch functionality, but for windows with SDL
+
 `src` Cross platform source code. GUI and GUI state needed on both simulator and watch
 
-`src_esp32` Code only compiled on esp32. Contains task scheduling, implementation of hardware abstraction
+`src/esp32` Code only compiled on esp32. Contains task scheduling, implementation of hardware abstraction
 
-`src_win` Code only compiled on windows. Contains fake hardware abstractions, parallel lvgl implementation based on SDL
+`src/win` Code only compiled on windows. Contains fake hardware abstractions, parallel lvgl implementation based on SDL
 
-External dependencies are linked under the relevant source directory when included as submodules. When the build system includes a package manager, they're listed in the package managment configuration unless we have to modify them.
+`include` Include dirs (afaict we have to separate out this way for platformio). Similar structure to src
 
-Openable Project files are top-level regardless of platform. 
+`watch_sim` Contains the SDL based LVGL simulator, reconfigured to build a library. The top level SLN builds it and the watch for windows. LVGL itself and driver and example code are included here as submodules
 
-TODO: for support files & build products... where do those go?
+`WatchFace` Project directory for VS2019 project which builds the simulator. Have not worked out how to move these yet.
 
 
 ## IDE/ Build System
-On Windows we're using Visual Studio 2017 as the IDE and Build system. Open the main solution file at top level. The Free edition of Visual Studio should work.
+On Windows we're using Visual Studio 2019 as the IDE and Build system. Open the main solution file at top level. The Free edition of Visual Studio should work.
 
-On ESP32 using PlatformIO and VS Code, because of easy setup. It is possible to use Visual Studio 2017 and platformIO, but things may not work quite right.
+On ESP32 using PlatformIO and VS Code, because of easy setup. It is possible to use Visual Studio and platformIO, but I have not tried it.
 
 

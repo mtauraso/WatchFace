@@ -61,6 +61,15 @@ void watchStart() {
   rtc->check();
 }
 
+int bl = 0;
+void ch_bl(lv_task_t * ) {
+  bl += 10;
+  watch->bl->adjust(bl);
+  Serial.print("Backlight");
+  Serial.print(bl);
+  Serial.print("\n");
+}
+
 
 void setup() {
   // put your setup code here, to run once:
@@ -70,12 +79,19 @@ void setup() {
   //printFlashStats();
 
   watch->openBL();
-  watch->bl->adjust(30);
+  
+  // 1/2 of max possible backlight
+  watch->bl->adjust(255*1/3);
 
   //lv_scr_load(clock_2_create(NULL));
-  lv_scr_load(test_pattern_create(NULL));
+  //lv_scr_load(test_pattern_create(NULL, GAMMA_CHECKERBOARD));
+  //lv_scr_load(test_pattern_create(NULL, CONTRAST_BARS));
+  //lv_scr_load(color_val_test(nullptr, lv_color_make(31 << 3, 0, 31 << 3)));
+  lv_scr_load(test_pattern_create(NULL, BLACK_LEVEL_SQUARES));
+  //lv_task_create(ch_bl, 1000, LV_TASK_PRIO_MID, nullptr);
   //lv_task_create(clock_2_update, 50, LV_TASK_PRIO_MID, nullptr);
 }
+
 
 void loop() {
   // put your main code here, to run repeatedly:

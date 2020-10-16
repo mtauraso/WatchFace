@@ -57,7 +57,7 @@ int main(int argc, char** argv)
 
     /*Initialize the HAL for LittlevGL*/
     hal_init();
-    adjust_gamma();
+    //adjust_gamma();
 
     rtc = new PCF8563_Class();
     rtc->check();
@@ -71,7 +71,10 @@ int main(int argc, char** argv)
 
 //	lv_scr_load(clock_2_create(NULL));
 //	lv_task_create(clock_2_update, 50, LV_TASK_PRIO_MID, NULL);
-    lv_scr_load(test_pattern_create(NULL));
+    //lv_scr_load(test_pattern_create(NULL, GAMMA_CHECKERBOARD));
+    //lv_scr_load(test_pattern_create(NULL, CONTRAST_BARS));
+    lv_scr_load(color_val_test(nullptr, lv_color_make(31 << 3, 0, 31 << 3)));
+    //lv_scr_load(test_pattern_create(NULL, BLACK_LEVEL_SQUARES));
 
     //lv_demo_widgets();
     //lv_demo_benchmark();
@@ -200,7 +203,7 @@ static void clamp_ramp(uint8_t min, uint8_t max, Uint16* ramp) {
 static void adjust_gamma(void) {
     float gammaR = 1.0;// 0.7;
     float gammaG = 1.0;// 1.1;
-    float gammaB = 1.0;// 1.4;
+    float gammaB = 1.0;// 1.4;s
 
     float scale = 1.0;
 

@@ -362,7 +362,6 @@
     <ClCompile Include="lv_examples/src/lv_ex_widgets/lv_ex_switch/lv_ex_switch_1.c" />
     <ClCompile Include="lv_examples/src/lv_ex_widgets/lv_ex_table/lv_ex_table_1.c" />
     <ClCompile Include="lv_examples/src/lv_ex_widgets/lv_ex_tabview/lv_ex_tabview_1.c" />
-    <ClCompile Include="lv_examples/src/lv_ex_widgets/lv_ex_templ.c" />
     <ClCompile Include="lv_examples/src/lv_ex_widgets/lv_ex_textarea/lv_ex_textarea_1.c" />
     <ClCompile Include="lv_examples/src/lv_ex_widgets/lv_ex_textarea/lv_ex_textarea_2.c" />
     <ClCompile Include="lv_examples/src/lv_ex_widgets/lv_ex_tileview/lv_ex_tileview_1.c" />

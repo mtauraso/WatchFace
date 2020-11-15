@@ -15,6 +15,7 @@ static str_datetime_t time_labels;
 
 lv_obj_t* clock_2_create(lv_obj_t* parent) {
 	lv_obj_t* clock_scr = lv_obj_create(parent, NULL);
+	lv_obj_set_size(clock_scr, LV_HOR_RES, LV_VER_RES);
 
 	// Background
 	lv_obj_t* background = background_create(clock_scr);
@@ -28,7 +29,7 @@ lv_obj_t* clock_2_create(lv_obj_t* parent) {
 	lv_style_set_text_color(&style, LV_STATE_DEFAULT, color);
 	lv_style_set_text_font(&style, LV_STATE_DEFAULT, &lv_font_montserrat_32);
 
-	// Gauge for seconds
+	// Style of Gauge for seconds
 	static lv_style_t gauge_style_main;
 	lv_style_init(&gauge_style_main);
 	lv_style_set_line_width(&gauge_style_main, LV_STATE_DEFAULT, 2);
@@ -40,14 +41,14 @@ lv_obj_t* clock_2_create(lv_obj_t* parent) {
 	lv_style_set_text_opa(&gauge_style_main, LV_STATE_DEFAULT, LV_OPA_TRANSP);
 	//lv_style_set_scale_border_width (&gauge_style_main, LV_STATE_DEFAULT, 30);
 	
-	
 
+	// Style for Gauge Neelde
 	static lv_style_t gauge_style_needle;
 	lv_style_init(&gauge_style_needle);
 	lv_style_set_line_opa(&gauge_style_needle, LV_STATE_DEFAULT, LV_OPA_TRANSP);
 	lv_style_set_size(&gauge_style_needle, LV_STATE_DEFAULT, 0);
 
-
+	// Style for Gauge major delineators
 	static lv_style_t gauge_style_major;
 	lv_style_init(&gauge_style_major);
 	lv_style_set_line_width(&gauge_style_major, LV_STATE_DEFAULT, 3);
@@ -55,6 +56,7 @@ lv_obj_t* clock_2_create(lv_obj_t* parent) {
 	lv_style_set_scale_end_color(&gauge_style_major, LV_STATE_DEFAULT, color);
 
 
+	// Gague with seconds
 	time_labels.second = lv_gauge_create(background, nullptr);
 	lv_gauge_set_range(time_labels.second, 0, 60);
 	lv_gauge_set_scale(time_labels.second, 360, 60, 2);
@@ -66,16 +68,29 @@ lv_obj_t* clock_2_create(lv_obj_t* parent) {
 	lv_obj_set_size(time_labels.second, 170, 170);
 	lv_obj_align(time_labels.second, NULL, LV_ALIGN_CENTER, 0, 0);
 
-	//Numbers
+	//Numbers Hour
 	time_labels.hour = lv_label_create(background, NULL);
 	lv_obj_add_style(time_labels.hour, LV_OBJ_PART_MAIN, &style);
 	lv_label_set_text(time_labels.hour, "00");
 	lv_obj_align(time_labels.hour, NULL, LV_ALIGN_CENTER, 0, -25);
 
+
+	// Numbers minute
 	time_labels.minute = lv_label_create(background, NULL);
 	lv_obj_add_style(time_labels.minute, LV_OBJ_PART_MAIN, &style);
 	lv_label_set_text(time_labels.minute, "00");
 	lv_obj_align(time_labels.minute, NULL, LV_ALIGN_CENTER, 0, 25);
+
+	//If parent is a tileview set some stuff to be dragable via the tileview
+	lv_obj_type_t parent_types;
+	lv_obj_get_type(parent, &parent_types);
+	if (parent_types.type[0] == "lv_tileview") {
+		lv_tileview_add_element(parent, time_labels.second);
+		lv_tileview_add_element(parent, time_labels.minute);
+		lv_tileview_add_element(parent, time_labels.hour);
+		lv_tileview_add_element(parent, background);
+	}
+
 
 //	time_labels.sec_digit = lv_label_create(background, NULL);
 //	lv_obj_add_style(time_labels.sec_digit, LV_OBJ_PART_MAIN, &style);

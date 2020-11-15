@@ -42,91 +42,141 @@ void draw_checkboard(lv_obj_t* canvas, int x, int y, int width, int height, lv_c
 	}
 }
 
-
-lv_obj_t* test_pattern_create(lv_obj_t* parent, test_pattern pattern) {
-
+lv_obj_t* contrast_bars_create(lv_obj_t* parent) {
 	// Canvas data
 	const int HEIGHT = 240;
 	const int WIDTH = 240;
 	const int bufsize = sizeof(lv_color_t) * WIDTH * HEIGHT;
-	static lv_color_t * buf = (lv_color_t *) ps_malloc(bufsize);
+	static lv_color_t* buf = (lv_color_t*)ps_malloc(bufsize);
 
-	lv_obj_t * canvas = lv_canvas_create(parent, nullptr);
+	lv_obj_t* canvas = lv_canvas_create(parent, nullptr);
 
 	lv_canvas_set_buffer(canvas, buf, WIDTH, HEIGHT, LV_IMG_CF_TRUE_COLOR);
 	lv_canvas_fill_bg(canvas, lv_color_make(0, 0, 0), LV_OPA_COVER);
 
-	if (pattern == CONTRAST_BARS) {
-		// Contrast bars
-		const int bar_height = 16;
-		const int bar_sep = 16;
-		draw_bar(canvas, bar_height, bar_sep,                      false, false, true);
-		draw_bar(canvas, bar_height, bar_sep * 2 + bar_height,     false, true, false);
-		draw_bar(canvas, bar_height, bar_sep * 3 + bar_height * 2, false, true, true);
-		draw_bar(canvas, bar_height, bar_sep * 4 + bar_height * 3, true, false, false);
-		draw_bar(canvas, bar_height, bar_sep * 5 + bar_height * 4, true, false, true);
-		draw_bar(canvas, bar_height, bar_sep * 6 + bar_height * 5, true, true, false);
-		draw_bar(canvas, bar_height, bar_sep * 7 + bar_height * 6, true, true, true);
-	}
-	else if (pattern == BLACK_LEVEL_SQUARES) {
-		// Black level squares
-		const int square_sep = 8;
-		const int square_size = 32;
-		for (int i = 0; i < 6; i++) {
-			for (int j = 0; j < 6; j++) {
-				int square_num = j + 6*i;
-				lv_color_t color = lv_color_make((square_num + 1) * 8, (square_num + 1) * 8, (square_num + 1) * 8);
-				draw_square(canvas, 
-					square_sep * j + square_sep / 2 + square_size * j, 
-					square_sep * i + square_sep / 2 + square_size * i, 
-					square_size, color);
-			}
+	// Contrast bars
+	const int bar_height = 16;
+	const int bar_sep = 16;
+	draw_bar(canvas, bar_height, bar_sep, false, false, true);
+	draw_bar(canvas, bar_height, bar_sep * 2 + bar_height, false, true, false);
+	draw_bar(canvas, bar_height, bar_sep * 3 + bar_height * 2, false, true, true);
+	draw_bar(canvas, bar_height, bar_sep * 4 + bar_height * 3, true, false, false);
+	draw_bar(canvas, bar_height, bar_sep * 5 + bar_height * 4, true, false, true);
+	draw_bar(canvas, bar_height, bar_sep * 6 + bar_height * 5, true, true, false);
+	draw_bar(canvas, bar_height, bar_sep * 7 + bar_height * 6, true, true, true);
+	
+	return canvas;
+}
+
+lv_obj_t* black_level_squares_create(lv_obj_t* parent) {
+	// Canvas data
+	const int HEIGHT = 240;
+	const int WIDTH = 240;
+	const int bufsize = sizeof(lv_color_t) * WIDTH * HEIGHT;
+	static lv_color_t* buf = (lv_color_t*)ps_malloc(bufsize);
+
+	lv_obj_t* canvas = lv_canvas_create(parent, nullptr);
+
+	lv_canvas_set_buffer(canvas, buf, WIDTH, HEIGHT, LV_IMG_CF_TRUE_COLOR);
+	lv_canvas_fill_bg(canvas, lv_color_make(0, 0, 0), LV_OPA_COVER);
+
+	// Black level squares
+	const int square_sep = 8;
+	const int square_size = 32;
+	for (int i = 0; i < 6; i++) {
+		for (int j = 0; j < 6; j++) {
+			int square_num = j + 6 * i;
+			lv_color_t color = lv_color_make((square_num + 1) * 8, (square_num + 1) * 8, (square_num + 1) * 8);
+			draw_square(canvas,
+				square_sep * j + square_sep / 2 + square_size * j,
+				square_sep * i + square_sep / 2 + square_size * i,
+				square_size, color);
 		}
 	}
-	else if (pattern == GAMMA_CHECKERBOARD) {
-		for (int i = 0; i < 3; i ++) {
-			int color_val_full = 253; // one off of full brightness on my test pattern..?
-			int color_val_26 = 195; // Should equal brightness to 50% checkerboard at gamma of 2.6
-			int color_val_22 = 186; // Should equal brightness to 50% checkerboard at gamma of 2.2
-			int color_val_18 = 173; // Should equal brightness to 50% checkerboard at gamma of 1.8
-			lv_color_t color_full = lv_color_make(	color_val_full*(i==0), 
-													color_val_full*(i==1), 
-													color_val_full*(i==2));
-			lv_color_t color_26 = lv_color_make(	color_val_26*(i==0), 
-													color_val_26*(i==1), 
-													color_val_26*(i==2));
-			lv_color_t color_22 = lv_color_make(	color_val_22*(i==0), 
-													color_val_22*(i==1), 
-													color_val_22*(i==2));
-			lv_color_t color_18 = lv_color_make(	color_val_18*(i==0), 
-													color_val_18*(i==1), 
-													color_val_18*(i==2));
-			draw_checkboard(canvas, i*80, 0 , 80 , 240, color_full, lv_color_make(0,0,0));
-			draw_square(canvas, i * 80 + 20, 30, 20, color_26);
-			draw_square(canvas, i * 80 + 40, 30, 20, color_26);
-			draw_square(canvas, i * 80 + 20, 80 + 30, 20, color_22);
-			draw_square(canvas, i * 80 + 40, 80 + 30, 20, color_22);
-			draw_square(canvas, i * 80 + 20, 160 + 30, 20, color_18);
-			draw_square(canvas, i * 80 + 40, 160 + 30, 20, color_18);
-		}
-	} 
-	else if (pattern == HSV_SWEEP) {
-		// HSV traversal
-		for (int i = 0; i < WIDTH; i++) {
-			for (int j = 0; j < HEIGHT; j++) {
-				float i_clamp = float(i) / (WIDTH - 1);
-				float j_clamp = float(j) / (HEIGHT - 1);
+	return canvas;
+}
 
-				uint16_t hue = i_clamp * 359; // [0..359]
-				uint8_t saturation = 100; // [0..100]
-				uint8_t value = j_clamp * 100; // [0..100]
+lv_obj_t* gamma_checkerboard_create(lv_obj_t* parent) {
+	// Canvas data
+	const int HEIGHT = 240;
+	const int WIDTH = 240;
+	const int bufsize = sizeof(lv_color_t) * WIDTH * HEIGHT;
+	static lv_color_t* buf = (lv_color_t*)ps_malloc(bufsize);
 
-				lv_canvas_set_px(canvas, i, j, lv_color_hsv_to_rgb(hue, saturation, value));
-			}
+	lv_obj_t* canvas = lv_canvas_create(parent, nullptr);
+
+	lv_canvas_set_buffer(canvas, buf, WIDTH, HEIGHT, LV_IMG_CF_TRUE_COLOR);
+	lv_canvas_fill_bg(canvas, lv_color_make(0, 0, 0), LV_OPA_COVER);
+
+	for (int i = 0; i < 3; i++) {
+		int color_val_full = 253; // one off of full brightness on my test pattern..?
+		int color_val_26 = 195; // Should equal brightness to 50% checkerboard at gamma of 2.6
+		int color_val_22 = 186; // Should equal brightness to 50% checkerboard at gamma of 2.2
+		int color_val_18 = 173; // Should equal brightness to 50% checkerboard at gamma of 1.8
+		lv_color_t color_full = lv_color_make(color_val_full * (i == 0),
+			color_val_full * (i == 1),
+			color_val_full * (i == 2));
+		lv_color_t color_26 = lv_color_make(color_val_26 * (i == 0),
+			color_val_26 * (i == 1),
+			color_val_26 * (i == 2));
+		lv_color_t color_22 = lv_color_make(color_val_22 * (i == 0),
+			color_val_22 * (i == 1),
+			color_val_22 * (i == 2));
+		lv_color_t color_18 = lv_color_make(color_val_18 * (i == 0),
+			color_val_18 * (i == 1),
+			color_val_18 * (i == 2));
+		draw_checkboard(canvas, i * 80, 0, 80, 240, color_full, lv_color_make(0, 0, 0));
+		draw_square(canvas, i * 80 + 20, 30, 20, color_26);
+		draw_square(canvas, i * 80 + 40, 30, 20, color_26);
+		draw_square(canvas, i * 80 + 20, 80 + 30, 20, color_22);
+		draw_square(canvas, i * 80 + 40, 80 + 30, 20, color_22);
+		draw_square(canvas, i * 80 + 20, 160 + 30, 20, color_18);
+		draw_square(canvas, i * 80 + 40, 160 + 30, 20, color_18);
+	}
+
+	return canvas;
+}
+
+lv_obj_t* hsv_sweep_create(lv_obj_t* parent) {
+	// Canvas data
+	const int HEIGHT = 240;
+	const int WIDTH = 240;
+	const int bufsize = sizeof(lv_color_t) * WIDTH * HEIGHT;
+	static lv_color_t* buf = (lv_color_t*)ps_malloc(bufsize);
+
+	lv_obj_t* canvas = lv_canvas_create(parent, nullptr);
+
+	lv_canvas_set_buffer(canvas, buf, WIDTH, HEIGHT, LV_IMG_CF_TRUE_COLOR);
+	lv_canvas_fill_bg(canvas, lv_color_make(0, 0, 0), LV_OPA_COVER);
+
+	// HSV traversal
+	for (int i = 0; i < WIDTH; i++) {
+		for (int j = 0; j < HEIGHT; j++) {
+			float i_clamp = float(i) / (WIDTH - 1);
+			float j_clamp = float(j) / (HEIGHT - 1);
+
+			uint16_t hue = i_clamp * 359; // [0..359]
+			uint8_t saturation = 100; // [0..100]
+			uint8_t value = j_clamp * 100; // [0..100]
+
+			lv_canvas_set_px(canvas, i, j, lv_color_hsv_to_rgb(hue, saturation, value));
 		}
 	}
 
 	return canvas;
+}
+
+lv_obj_t* test_pattern_create(lv_obj_t* parent, test_pattern pattern) {
+	switch (pattern) {
+		case CONTRAST_BARS:
+			return contrast_bars_create(parent);
+		case BLACK_LEVEL_SQUARES:
+			return black_level_squares_create(parent);
+		case GAMMA_CHECKERBOARD:
+			return gamma_checkerboard_create(parent);
+		case HSV_SWEEP:
+			return hsv_sweep_create(parent);
+	}
 }
 
 lv_obj_t* color_val_test(lv_obj_t* parent, lv_color_t color)

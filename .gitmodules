@@ -6,7 +6,7 @@
 	url = https://github.com/lvgl/lv_examples.git
 [submodule "win_sim/lv_drivers"]
 	path = watch_sim/lv_drivers
-	url = https://github.com/lvgl/lv_drivers.git
+	url = git@github.com:mtauraso/lv_drivers.git
 [submodule "lib/TTGO_TWatch_Library"]
 	path = lib/TTGO_TWatch_Library
 	url = git@github.com:mtauraso/TTGO_TWatch_Library.git

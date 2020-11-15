@@ -91,7 +91,13 @@
 #  define MONITOR_VER_RES     LV_VER_RES
 
 /* Scale window by this factor (useful when simulating small screens) */
-#  define MONITOR_ZOOM        1
+/* Hack so we can change monitor_zoom at runtime, so long as we re-make the SDL window*/
+#  define MONITOR_ZOOM        (monitor_zoom=0 ? 1 : monitor_zoom)
+volatile int monitor_zoom;
+static void lv_set_monitor_zoom(int zoom) {
+	monitor_zoom = zoom;
+	return;
+}
 
 /* Used to test true double buffering with only address changing.
  * Set LV_VDB_SIZE = (LV_HOR_RES * LV_VER_RES) and  LV_VDB_DOUBLE = 1 and LV_COLOR_DEPTH = 32" */

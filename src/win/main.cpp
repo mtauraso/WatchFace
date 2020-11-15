@@ -19,6 +19,7 @@
 #include "clock.h"
 #include "clock_2.h"
 #include "test_pattern.h"
+#include "main_menu.h"
 
 /*********************
 *      DEFINES
@@ -40,6 +41,10 @@ static void adjust_gamma(void);
 **********************/
 static lv_indev_t * kb_indev;
 
+static lv_disp_t* main_disp;
+static lv_disp_buf_t disp_buf1;
+static lv_color_t buf1_1[LV_HOR_RES_MAX * LV_VER_RES_MAX];
+
 PCF8563_Class * rtc;
 
 /**********************
@@ -50,9 +55,11 @@ PCF8563_Class * rtc;
 *   GLOBAL FUNCTIONS
 **********************/
 
+
 int main(int argc, char** argv)
 {
     /*Initialize LittlevGL*/
+    lv_set_monitor_zoom(2);
     lv_init();
 
     /*Initialize the HAL for LittlevGL*/
@@ -68,45 +75,16 @@ int main(int argc, char** argv)
      * Uncomment any one (and only one) of the functions below to run that
      * item.
      */
+    //lv_disp_set_default(debug_disp);
+    lv_scr_load(main_menu_create(NULL));
+    //lv_scr_load(clock_2_create(NULL));
+    lv_task_create(clock_2_update, 50, LV_TASK_PRIO_MID, NULL);
 
-//	lv_scr_load(clock_2_create(NULL));
-//	lv_task_create(clock_2_update, 50, LV_TASK_PRIO_MID, NULL);
     //lv_scr_load(test_pattern_create(NULL, GAMMA_CHECKERBOARD));
     //lv_scr_load(test_pattern_create(NULL, CONTRAST_BARS));
-    lv_scr_load(color_val_test(nullptr, lv_color_make(31 << 3, 0, 31 << 3)));
+    //lv_scr_load(color_val_test(nullptr, lv_color_make(31 << 3, 0, 31 << 3)));
     //lv_scr_load(test_pattern_create(NULL, BLACK_LEVEL_SQUARES));
 
-    //lv_demo_widgets();
-    //lv_demo_benchmark();
-    //lv_demo_keypad_encoder();
-    //lv_demo_printer();
-    //lv_demo_stress();
-    //lv_ex_get_started_1();
-    //lv_ex_get_started_2();
-    //lv_ex_get_started_3();
-
-    //lv_ex_style_1();
-    //lv_ex_style_2();
-    //lv_ex_style_3();
-    //lv_ex_style_4();
-    //lv_ex_style_5();
-    //lv_ex_style_6();
-    //lv_ex_style_7();
-    //lv_ex_style_8();
-    //lv_ex_style_9();
-    //lv_ex_style_10();
-    //lv_ex_style_11();
-
-    /*
-     * There are many examples of individual widgets found under the
-     * lv_examples/src/lv_ex_widgets directory.  Here are a few sample test
-     * functions.  Look in that directory to find all the rest.
-     */
-    //lv_ex_arc_1();
-    //lv_ex_cpicker_1();
-    //lv_ex_gauge_1();
-    //lv_ex_img_1();
-    //lv_ex_tileview_1();
 
     while (1) {
         /* Periodically call the lv_task handler.
@@ -122,25 +100,10 @@ int main(int argc, char** argv)
 *   STATIC FUNCTIONS
 **********************/
 
-
-/**
-* Initialize the Hardware Abstraction Layer (HAL) for the Littlev graphics library
-*/
-static void hal_init(void)
-{
-    /* Add a display
-    * Use the 'monitor' driver which creates window on PC's monitor to simulate a display*/
-    monitor_init();
-
-    static lv_disp_buf_t disp_buf1;
-    static lv_color_t buf1_1[LV_HOR_RES_MAX * LV_VER_RES_MAX];
-    lv_disp_buf_init(&disp_buf1, buf1_1, NULL, LV_HOR_RES_MAX * LV_VER_RES_MAX);
-
-    lv_disp_drv_t disp_drv;
-    lv_disp_drv_init(&disp_drv);            /*Basic initialization*/
-    disp_drv.buffer = &disp_buf1;
-    disp_drv.flush_cb = monitor_flush;
-    lv_disp_drv_register(&disp_drv);
+static void hal_input_init(lv_disp_t* disp) {
+    lv_disp_t* old_default;
+    old_default = lv_disp_get_default();
+    lv_disp_set_default(disp);
 
     /* Add the mouse (or touchpad) as input device
     * Use the 'mouse' driver which reads the PC's mouse*/
@@ -161,10 +124,50 @@ static void hal_init(void)
     kb_indev = lv_indev_drv_register(&kb_drv);
 #endif
 
+    lv_disp_set_default(old_default);
+}
+
+/**
+* Initialize the Hardware Abstraction Layer (HAL) for the Littlev graphics library
+*/
+static void hal_init(void)
+{
+    /* Add a display
+    * Use the 'monitor' driver which creates window on PC's monitor to simulate a display*/
+    monitor_init();
+
+    // Initialize Main display
+    lv_disp_buf_init(&disp_buf1, buf1_1, NULL, LV_HOR_RES_MAX * LV_VER_RES_MAX);
+
+    lv_disp_drv_t disp_drv;
+    lv_disp_drv_init(&disp_drv);            /*Basic initialization*/
+    disp_drv.buffer = &disp_buf1;
+    disp_drv.flush_cb = monitor_flush;
+    main_disp = lv_disp_drv_register(&disp_drv);
+    lv_disp_set_default(main_disp);
+
+    hal_input_init(main_disp);
+
     /* Tick init.
     * You have to call 'lv_tick_inc()' in every milliseconds
     * Create an SDL thread to do this*/
     SDL_CreateThread(tick_thread, "tick", NULL);
+}
+
+
+/**
+* A task to measure the elapsed time for LittlevGL
+* @param data unused
+* @return never return
+*/
+static int tick_thread(void* data)
+{
+    while (1) {
+        lv_tick_inc(5);
+        SDL_Delay(5);   /*Sleep for 1 millisecond*/
+    }
+
+    return 0;
 }
 
 //Haxonhax
@@ -223,17 +226,4 @@ static void adjust_gamma(void) {
 
 
 
-/**
-* A task to measure the elapsed time for LittlevGL
-* @param data unused
-* @return never return
-*/
-static int tick_thread(void *data)
-{
-    while (1) {
-        lv_tick_inc(5);
-        SDL_Delay(5);   /*Sleep for 1 millisecond*/
-    }
 
-    return 0;
-}

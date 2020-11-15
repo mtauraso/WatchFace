@@ -12,6 +12,12 @@ enum test_pattern {
 
 lv_obj_t* test_pattern_create(lv_obj_t* parent, test_pattern pattern);
 
+lv_obj_t* contrast_bars_create(lv_obj_t* parent);
+lv_obj_t* black_level_squares_create(lv_obj_t* parent); 
+lv_obj_t* gamma_checkerboard_create(lv_obj_t* parent); 
+lv_obj_t* hsv_sweep_create(lv_obj_t* parent);
+
+
 lv_obj_t* color_val_test(lv_obj_t* parent, lv_color_t color);
 
 
